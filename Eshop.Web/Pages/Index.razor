@@ -1,0 +1,356 @@
+﻿@page "/"
+@inject IProductService ProductService;
+
+<!-- Search Form -->
+<div class="middle-inner section-search">
+    <div class="container">
+        <div class="row">
+            <div class="input-group col-12">
+                <input id="inputSearch" @bind="@SearchStr" class="form-control" placeholder="Search Products Here ....." required type="search" />
+                <div class="input-group-append">
+                    <button class="btn" @onclick="@OnButtonClick"><i class="ti-search"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="text-danger">
+            @Msg
+        </div>
+    </div>
+</div>
+<!--/ End Search Form -->
+<!-- Product Style -->
+<section class="product-area shop-sidebar shop">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-4 col-12">
+                <div class="shop-sidebar">
+                    <!-- Single Widget -->
+                    <div class="single-widget category">
+                        <h3 class="title">Categories</h3>
+                        <ul class="categor-list">
+                            <li><a @onclick="@(() => OnSearchClick("jacket", "category"))">jacket</a></li>
+                            <li><a @onclick="@(() => OnSearchClick("jeans", "category"))">jeans</a></li>
+                            <li><a @onclick="@(() => OnSearchClick("sweatshirts", "category"))">sweatshirts</a></li>
+                            <li><a @onclick="@(() => OnSearchClick("trousers", "category"))">trousers</a></li>
+                            <li><a @onclick="@(() => OnSearchClick("kitwears", "category"))">kitwears</a></li>
+                            <li><a @onclick="@(() => OnSearchClick("accessories", "category"))">accessories</a></li>
+                        </ul>
+                    </div>
+                    <!--/ End Single Widget -->
+                    <!-- Single Widget -->
+                    <div class="single-widget category">
+                        <h3 class="title">Manufacturers</h3>
+                        <ul class="categor-list">
+                            <li><a @onclick="@(() => OnSearchClick("forever", "manufacturer"))">Forever</a></li>
+                            <li><a @onclick="@(() => OnSearchClick("giordano", "manufacturer"))">giordano</a></li>
+                            <li><a @onclick="@(() => OnSearchClick("abercrombie", "manufacturer"))">abercrombie</a></li>
+                            <li><a @onclick="@(() => OnSearchClick("ecko united", "manufacturer"))">ecko united</a></li>
+                            <li><a @onclick="@(() => OnSearchClick("zara", "manufacturer"))">zara</a></li>
+                        </ul>
+                    </div>
+                    <!--/ End Single Widget -->
+                </div>
+            </div>
+            <div class="col-lg-9 col-md-8 col-12">
+                <div class="row">
+                    <div class="col-12">
+                        <!-- Shop Top -->
+                        <div class="shop-top">
+                            <div class="shop-shorter">
+                                <div class="single-shorter">
+                                    <label for="selectSize">Show :</label>
+                                </div>
+                                <div class="single-shorter">
+                                    <select id="selectSize" class="nice-select">
+                                        <option selected>06</option>
+                                    </select>
+                                </div>
+                                <div class="single-shorter">
+                                    <label for="selectSort">Sort By :</label>
+                                </div>
+                                <div class="single-shorter">
+                                    <select class="nice-select" id="selectSort" @onchange="@OnSelectChange">
+                                        <option value="name" selected>Name</option>
+                                        <option value="price">Price</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <ul class="view-mode">
+                                <li><a @onclick="@OnRestGridClick" title="Reset Shop Grid"><i class="fa fa-refresh"></i><span>Reset Shop Grid</span></a></li>
+                            </ul>
+                        </div>
+                        <!--/ End Shop Top -->
+                    </div>
+                </div>
+                <div class="row">
+                    @if (productList == null)
+                    {
+                        <div class="col-lg-12 col-md-6 col-12">
+                            <div class="single-product">
+                                <div class="product-content">
+                                    <h3>No products found ... </h3>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else if (productList.Count() == 0)
+                    {
+                        <div class="col-lg-12 col-md-6 col-12">
+                            <div class="single-product">
+                                <div class="product-content">
+                                    <h3>Empty products grid ... </h3>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        var productCount = productList.Count();
+                        @if (productCount > 0)
+                        {
+                            const int productsPerRow = 3;
+                            var productRowList = new List<ProductListDTO>();
+                            @for (int i = 0; i < productCount; i++)
+                            {
+                                productRowList = productList.Skip(i * productsPerRow).Take(productsPerRow).ToList();
+                                @foreach (var prod in productRowList)
+                                {
+                                    <div class="col-lg-4 col-md-6 col-12">
+                                        <div class="single-product">
+                                            <div class="product-img">
+                                                <a>
+                                                    <img class="default-img" src="@prod.ThumbnailURL" alt="#">
+                                                    <img class="hover-img" src="@prod.ThumbnailURL" alt="#">
+                                                    @if (prod.IsNewArriavl)
+                                                    {
+                                                        <span class="new">New</span>
+                                                    }
+                                                </a>
+                                                <div class="button-head">
+                                                    <div class="product-action">
+                                                        <a data-toggle="modal" data-target="#productModal" data-id="@prod.Id" title="See More" @onclick="@(()=>OnModalClick(prod.Id))"><i class=" ti-eye"></i><span>See More</span></a>
+                                                    </div>
+                                                    <div class="product-action-2">
+                                                        <span>See Product Details More&nbsp;&nbsp;<i class=" ti-more"></i>&nbsp;<i class=" ti-shift-right-alt"></i></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="product-content">
+                                                <h3><a>@prod.Name</a></h3>
+                                                <div class="product-price">
+                                                    <span>@prod.Price.ToString("C")</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--/ End Product Style  -->
+<!-- Modal -->
+<div class="modal fade" id="productModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span class="ti-close" aria-hidden="true"></span></button>
+            </div>
+            <div class="modal-body">
+                @if (product == null)
+                {
+                    <div class="text-center align-content-center">
+                        <h3>No product found... </h3>
+                    </div>
+                }
+                else
+                {
+                    <div class="row no-gutters">
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                            <!-- Product Slider -->
+                            <div class="product-gallery">
+                                <div class="quickview-slider-active">
+                                    <div class="single-slider">
+                                        <img src="@product.ImageURL" alt="#">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Product slider -->
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                            <div class="quickview-content">
+                                <h2>@product.Name</h2>
+                                <div class="quickview-ratting-review">
+                                    <div class="quickview-ratting-wrap">
+                                        <div class="quickview-ratting">
+                                            <i class="yellow fa fa-star"></i>
+                                        </div>
+                                        <a href="#"> Available Quantity ( @product.Quantity ) </a>
+                                    </div>
+                                    <div class="quickview-stock">
+                                        @if (product.Quantity > 0)
+                                        {
+                                            <span><i class="fa fa-check-circle-o"></i> In Our Stock</span>
+                                        }
+                                    </div>
+                                    <div class="quickview-new">
+                                        @if (product.IsNewArriavl)
+                                        {
+                                            <span><i class="fa fa-bell"></i> New Arrival</span>
+                                        }
+                                    </div>
+                                </div>
+                                <h3>@product.Price.ToString("C")</h3>
+                                <div class="quickview-peragraph">
+                                    <p>@product.Description</p>
+                                </div>
+                                <hr class="hr hr-blurry" />
+                                <div class="size">
+                                    <div class="row">
+                                        <div class="col-lg-6 col-12">
+                                            <h5 class="title">Size</h5>
+                                            <mark>@product.Size</mark>
+                                        </div>
+                                        <div class="col-lg-6 col-12">
+                                            <h5 class="title">Color</h5>
+                                            <mark>@product.Color</mark>
+                                        </div>
+                                    </div>
+                                    <div class="row"><br /></div>
+                                    <div class="row">
+                                        <div class="col-lg-6 col-12">
+                                            <h5 class="title">Categories</h5>
+                                            @product.Category
+                                        </div>
+                                        <div class="col-lg-6 col-12">
+                                            <h5 class="title">Manufacturer</h5>
+                                            @product.Manufacturer
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr class="hr hr-blurry" />
+                                <div class="default-social">
+                                    <h4 class="share-now">Share:</h4>
+                                    <ul>
+                                        <li><a class="facebook" href="#"><i class="fa fa-facebook"></i></a></li>
+                                        <li><a class="twitter" href="#"><i class="fa fa-twitter"></i></a></li>
+                                        <li><a class="youtube" href="#"><i class="fa fa-pinterest-p"></i></a></li>
+                                        <li><a class="dribbble" href="#"><i class="fa fa-google-plus"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal end -->
+@code {
+    private Product? product;
+    private IEnumerable<ProductListDTO>? productList;
+    private string? SearchStr { get; set; }
+    private string? Msg;
+
+    [CascadingParameter]
+    public ErrorComponent ErrorComponent { get; set; } = new ErrorComponent();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Msg = null;
+        try
+        {
+            productList = await ProductService.GetProductList();
+        }
+        catch (Exception e)
+        {
+            ErrorComponent.ToastErrorMsg(e);
+        }
+    }
+
+    private async Task OnButtonClick()
+    {
+        try
+        {
+            if (!String.IsNullOrEmpty(SearchStr))
+            {
+                productList = await ProductService.GetProductList(SearchStr);
+            }
+            else
+            {
+                Msg = "Search keyword is required.";
+            }
+        }
+        catch (Exception e)
+        {
+            ErrorComponent.ToastErrorMsg(e);
+        }
+    }
+
+    private async Task OnSearchClick(string valStr, string typeStr)
+    {
+        SearchStr = null;
+        Msg = null;
+        try
+        {
+            productList = await ProductService.GetProductList(valStr, typeStr);
+        }
+        catch(Exception e)
+        {
+            ErrorComponent.ToastErrorMsg(e);            
+        }
+    }
+
+    private async Task OnModalClick(int productId) {
+        try
+        {
+            product = await ProductService.GetProduct(productId);
+        }
+        catch(Exception e)
+        {
+            ErrorComponent.ToastErrorMsg(e);
+        }
+    }
+
+    private async Task OnRestGridClick()
+    {
+        SearchStr = null;
+        Msg = null;
+        try
+        {
+            productList = await ProductService.GetProductList();
+        }
+        catch(Exception e)
+        {
+            ErrorComponent.ToastErrorMsg(e);
+        }
+    }
+
+    private void OnSelectChange(ChangeEventArgs args)
+    {
+        try
+        {
+            if (args.Value is not null && productList is not null)
+            {
+                switch (args.Value.ToString())
+                {
+                    case "name":
+                        productList = productList.OrderBy(prod => prod.Name);
+                        break;
+                    case "price":
+                        productList = productList.OrderBy(prod => prod.Price);
+                        break;
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            ErrorComponent.ToastErrorMsg(e);
+        }
+    }
+}

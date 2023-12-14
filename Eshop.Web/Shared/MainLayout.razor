@@ -1,0 +1,104 @@
+﻿@using Blazored.Toast.Configuration
+@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+
+<!-- Header -->
+<header class="header shop">
+    <div class="middle-inner">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-9 col-md-2 col-12">
+                    <!-- Logo -->
+                    <div class="logo">
+                        <a @onclick="@(() => NavigateURL("/"))" @onclick:preventDefault><img src="images/logo.png" alt="logo"></a>
+                    </div>
+                    <!--/ End Logo -->
+
+                    <div class="mobile-nav"></div>
+                </div>
+                <div class="col-lg-3 col-md-12 col-12">
+                    <!-- Top Left -->
+                    <div class="right-content top-left">
+                        <ul class="list-main">
+                            <li><i class="ti-headphone-alt"></i> +060 (300) 401-582</li>
+                            <li><i class="ti-email"></i> support@eshophub.com</li>
+                        </ul>
+                    </div>
+                    <!--/ End Top Left -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Header Inner -->
+    <div class="header-inner">
+        <div class="container">
+            <div class="cat-nav-head">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="menu-area">
+                            <!-- Main Menu -->
+                            <nav class="navbar navbar-expand-lg">
+                                <div class="navbar-collapse">
+                                    <div class="nav-inner">
+                                        <ul class="nav main-menu menu navbar-nav">
+                                            <li class="active">
+                                                <a @onclick="@(() => NavigateURL("/"))" @onclick:preventDefault>Trending Products</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </nav>
+                            <!--/ End Main Menu -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/ End Header Inner -->
+</header>
+<!--/ End Header -->
+<!-- Breadcrumbs -->
+<div class="breadcrumbs">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="bread-inner">
+                    <ul class="bread-list">
+                        <li><a @onclick="@(() => NavigateURL("/"))" @onclick:preventDefault>Home<i class="ti-arrow-right"></i></a></li>
+                        <li class="active"><a @onclick="@(() => NavigateURL("/"))" @onclick:preventDefault>Shop Grid</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Breadcrumbs -->
+<!-- Product Style -->
+@Body
+<!--/ End Product Style  -->
+
+<br />
+<br />
+<br />
+
+<BlazoredToasts Position="ToastPosition.BottomRight"
+                Timeout="8"
+                IconType="IconType.FontAwesome"
+                SuccessClass="success-toast-override"
+                SuccessIcon="fa fa-thumbs-up"
+                ErrorIcon="fa fa-bug" />
+
+
+<!-- Start Footer Area -->
+<footer class="footer">
+    <Footer />
+</footer>
+
+@code {
+
+    private void NavigateURL(string navUrl)
+    {
+        NavigationManager.NavigateTo(navUrl, true);
+    }
+}

@@ -1,0 +1,16 @@
+﻿@inject IToastService _toastService
+@inject ILogger<ErrorComponent> _logger
+
+<CascadingValue Value=this>
+    @ChildContent
+</CascadingValue>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    public void ToastErrorMsg(Exception e){
+        _toastService.ShowError("Unable to retrieve content. Please contact system admin.");
+        _logger.LogDebug(e, e.Message);
+    }
+}
