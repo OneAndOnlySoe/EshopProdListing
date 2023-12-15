@@ -1,6 +1,6 @@
 Steps to Run the App
 1.	Open solution file , BlazorEshopSolution.sln from downloaded source code. It was built on .NET 6 Web Framework.
-2.	On the solution properties, update starup projects for both Eshop.Api and Eshop.Web to work as Multiple startup projects. Eshop.Api is mock up API to seed and retreive prodcts data.
+2.	On the solution properties, update starup projects for both Eshop.Api and Eshop.Web to work as Multiple startup projects. Eshop.Api is mock up API to seed and retreive product data.
 ![image](https://github.com/OneAndOnlySoe/EshopProdListing/assets/104401115/f437a8e7-b40a-45be-9802-6bbe87fc2597)
 
 
